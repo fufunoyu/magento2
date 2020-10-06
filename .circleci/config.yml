@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: exoplatform/jdk:8-ubuntu-1804
+
+    steps:
+      - checkout
+
+      - run: apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+      - run: apt install curl php-cli php-mbstring git unzip -y
+      - run: curl -sS https://getcomposer.org/installer -o composer-setup.php
+      - run: php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+      - run: composer install -n --prefer-dist
+
+      - run: 
+          name: whitesource
+          command: | 
+            curl -LJO https://github.com/whitesource/fs-agent-distribution/raw/master/standAlone/whitesource-fs-agent.jar
+            ls
+            java -jar whitesource-fs-agent.jar -c wss-unified-agent.config -d . 
+      - run:
+          name: scantist
+          command: |
+            bash <(curl -s https://scripts.scantist.com/staging/ci-circle.sh)
