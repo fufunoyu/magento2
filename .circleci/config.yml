@@ -5,6 +5,7 @@ jobs:
       - image: exoplatform/jdk:8-ubuntu-1804
 
     steps:
+      - run: apt update
       - run: apt install -y git
       - checkout
 
