@@ -5,13 +5,18 @@ jobs:
       - image: exoplatform/jdk:8-ubuntu-1804
 
     steps:
-      - run: apt update 
-      - run: apt install curl php-cli php-mbstring git unzip -y
       - checkout
-      - run: curl -sS https://getcomposer.org/installer -o composer-setup.php
-      - run: php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-      - run: composer install -n --prefer-dist
 
+      - run: 
+          name: php install 7.3
+          command: | 
+            apt update 
+            apt install software-properties-common -y
+            add-apt-repository ppa:ondrej/php -y
+            apt install -y php7.3 php7.3-common php7.3-opcache php7.3-cli php7.3-gd php7.3-curl php7.3-xml php7.3-mbstring
+            curl -sS https://getcomposer.org/installer -o composer-setup.php
+            php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+            composer install -n --prefer-dist
       - run: 
           name: whitesource
           command: | 
